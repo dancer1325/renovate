@@ -244,14 +244,17 @@ In such cases, use `globalExtends` instead of `extends` so that it is resolved i
 
 #### extends
 
-If you use `extends` within Global config then it's important to note that these are _not_ resolved/expanded during Global config processing and instead are passed through unresolved to be part of Repository config.
-Passing `extends` through to be part of Repository config has two major consequences:
-
-- It allows repository users to be able to use `ignorePresets` to ignore all or part of the `extends` presets, and
-- Presets defined within `extends` in Global config will take _higher_ precedence that "regular" Global config, because it's resolved later
+* Global config's `extends`
+  * are NOT resolved/expanded | Global config processing
+  * -- are passed through -- unresolved
+    * Reason: 🧠 be part of Repository config 🧠
+  * if it's pass -- as part of -- Repository config ->
+    * if repository users want to ignore ALL OR part of the `extends` presets -> use `ignorePresets` 
+    * presets | Global's `extends` config's precedence > "regular" Global config's precedence
 
 ### Using a centralized config
 
+* TODO:
 Using "centralized" configs through Renovate presets is important in order to be able to:
 
 - Save time by not repeating yourself in every repo with the same config, and
