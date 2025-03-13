@@ -1417,8 +1417,9 @@ This is particularly useful when combined with `assigneesSampleSize` and `assign
 
 ## extends
 
-See [shareable config presets](./config-presets.md) for details.
-Learn how to use presets by reading the [Key concepts, Presets](./key-concepts/presets.md#how-to-use-presets) page.
+* see 
+  * [shareable config presets](./config-presets.md)
+  * [how to use presets](./key-concepts/presets.md#how-to-use-presets)
 
 ## extractVersion
 
@@ -2540,11 +2541,16 @@ Renovate only queries the OSV database for dependencies that use one of these da
 
 ## packageRules
 
-`packageRules` is a powerful feature that lets you apply rules to individual packages or to groups of packages using regex pattern matching.
-
-`packageRules` is a collection of rules, that are **all** evaluated.
-If multiple rules match a dependency, configurations from matching rules will be merged together.
-The order of rules matters, because later rules may override configuration options from earlier ones, if they both specify the same option.
+* `packageRules`
+  * 👀lets you apply rules -- via -- regex pattern matching,👀 | 
+    * individual packages or
+    * groups of packages
+  * == collection of rules / 
+    * ALL are evaluated
+    * order matters
+      * Reason: 🧠if SEVERAL specify the SAME option -> later rules -- override -- earlier ones 🧠  
+  * if MULTIPLE rules match a dependency -> configurations from matching rules -- will be -- merged TOGETHER
+  * TODO:
 
 The matching process for a package rule:
 
@@ -3009,19 +3015,19 @@ updateType = 'major' and newVersionAgeInDays < 7
 
 ### matchManagers
 
-Use this field to restrict rules to a particular package manager. e.g.
-
-```json
-{
-  "packageRules": [
+* restrict rules | particular package manager
+  * _Example:_
+    ```json
     {
-      "matchPackageNames": ["node"],
-      "matchManagers": ["dockerfile"],
-      "enabled": false
+      "packageRules": [
+        {
+          "matchPackageNames": ["node"],
+          "matchManagers": ["dockerfile"],
+          "enabled": false
+        }
+      ]
     }
-  ]
-}
-```
+    ```
 
 ### matchMessage
 
@@ -3797,47 +3803,48 @@ Only change this setting if you really need to.
 
 ## registryAliases
 
-You can use the `registryAliases` object to set registry aliases.
-Renovate applies _all_ `registryAliases` objects, from top to bottom.
+* := object / 
+  * 👀enables you to registry aliases / from top -- to -- bottom 👀
 
-This feature works with the following managers:
+* SUPPORTED managers
+  * [`ansible`](modules/manager/ansible/index.md)
+  * [`bitbucket-pipelines`](modules/manager/bitbucket-pipelines/index.md)
+  * [`circleci`](modules/manager/circleci/index.md)
+  * [`docker-compose`](modules/manager/docker-compose/index.md)
+  * [`dockerfile`](modules/manager/dockerfile/index.md)
+  * [`droneci`](modules/manager/droneci/index.md)
+  * [`flux`](modules/manager/flux/index.md)
+  * [`github-actions`](modules/manager/github-actions/index.md)
+  * [`gitlabci`](modules/manager/gitlabci/index.md)
+  * [`helm-requirements`](modules/manager/helm-requirements/index.md)
+  * [`helm-values`](modules/manager/helm-values/index.md)
+  * [`helmfile`](modules/manager/helmfile/index.md)
+  * [`helmv3`](modules/manager/helmv3/index.md)
+  * [`kubernetes`](modules/manager/kubernetes/index.md)
+  * [`terraform`](modules/manager/terraform/index.md)
+  * [`woodpecker`](modules/manager/woodpecker/index.md)
 
-- [`ansible`](modules/manager/ansible/index.md)
-- [`bitbucket-pipelines`](modules/manager/bitbucket-pipelines/index.md)
-- [`circleci`](modules/manager/circleci/index.md)
-- [`docker-compose`](modules/manager/docker-compose/index.md)
-- [`dockerfile`](modules/manager/dockerfile/index.md)
-- [`droneci`](modules/manager/droneci/index.md)
-- [`flux`](modules/manager/flux/index.md)
-- [`github-actions`](modules/manager/github-actions/index.md)
-- [`gitlabci`](modules/manager/gitlabci/index.md)
-- [`helm-requirements`](modules/manager/helm-requirements/index.md)
-- [`helm-values`](modules/manager/helm-values/index.md)
-- [`helmfile`](modules/manager/helmfile/index.md)
-- [`helmv3`](modules/manager/helmv3/index.md)
-- [`kubernetes`](modules/manager/kubernetes/index.md)
-- [`terraform`](modules/manager/terraform/index.md)
-- [`woodpecker`](modules/manager/woodpecker/index.md)
-
-```json title="Setting generic aliases"
-{
-  "registryAliases": {
-    "jfrogecosystem": "some.jfrog.mirror",
-    "jfrog.com": "some.jfrog.mirror"
-  }
-}
-```
-
-```json title="Setting aliases for a specific Renovate manager only"
-{
-  "gitlabci": {
-    "registryAliases": {
-      "$HARBOR_HOST/$HARBOR_PROJECT": "registry.example.com/proxy",
-      "$HARBOR_HOST/tools": "registry.example.com/tools"
+* _Examples:_
+  * _Example1:_ set generic aliases
+    ```json title="Setting generic aliases"
+    {
+      "registryAliases": {
+        "jfrogecosystem": "some.jfrog.mirror",
+        "jfrog.com": "some.jfrog.mirror"
+      }
     }
-  }
-}
-```
+    ```
+  * _Example2:_ set aliases | SPECIFIC Renovate manager
+    ```json title="Setting aliases for a specific Renovate manager only"
+    {
+      "gitlabci": {
+        "registryAliases": {
+          "$HARBOR_HOST/$HARBOR_PROJECT": "registry.example.com/proxy",
+          "$HARBOR_HOST/tools": "registry.example.com/tools"
+        }
+      }
+    }
+    ```
 
 ## registryUrls
 
