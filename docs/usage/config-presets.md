@@ -5,36 +5,43 @@ description: Renovate's support for ESLint-like shareable configs
 
 # Shareable Config Presets
 
-This page describes how to configure your shared presets.
-Read the [Key concepts, presets](./key-concepts/presets.md) page to learn more about presets in general.
+* goal
+  * how to configure your shared presets
 
-Shareable config presets must use the JSON or JSON5 formats, other formats are not supported.
+* requirements
+  * configure it -- as -- JSON or JSON5 formats
+
+* -- can be -- nested
 
 <!-- prettier-ignore -->
 !!! tip
     Describe what your preset does in the `"description"` field.
     This way your configuration is self-documenting.
 
-## Extending from a preset
+## How to use a preset?
 
-To use a preset put it in an `extends` array within your Renovate config.
-Presets can be nested.
+* add | `extends`
+  * == `[preset1, preset2, ...]`
 
 ## Preset Hosting
 
-Presets should be hosted in repositories, which usually means the same platform host as Renovate is running against.
-
-Alternatively, Renovate can fetch preset files from an HTTP server.
+* recommendations
+  * host presets | repositories
+    * ways
+      * platform / host as Renovate == platform / host the preset
+        * 👀MOST common one 👀
+      * renovate | HTTP server
 
 <!-- prettier-ignore -->
 !!! warning
     We deprecated npm-based presets.
     We plan to drop the npm-based presets feature in a future major release of Renovate.
 
-You can set a Git tag (like a SemVer) to use a specific release of your shared config.
+* if you want to use a SPECIFIC release of your shared config -> set a Git tag (_Example:_ SemVer)
 
 ### Preset File Naming
 
+* TODO:
 Presets are repo-hosted, and you can have one or more presets hosted per repository.
 If you omit a file name from your preset (e.g. `github>abc/foo`) then Renovate will look for a `default.json` file in the repo.
 If you wish to have an alternative file name, you need to specify it (e.g. `github>abc/foo//alternative-name.json5`).
@@ -105,39 +112,36 @@ If you wish to have an alternative file name, you need to specify it (e.g. `gith
 An example of a small rule is `:preserveSemverRanges`, which has the description "Preserve (but continue to upgrade) any existing SemVer ranges.".
 It simply sets the configuration option `rangeStrategy` to `replace`.
 
-An example of a full config is `config:recommended`, which is Renovate's default configuration.
-It mostly uses Renovate config defaults but adds a few smart customizations such as grouping monorepo packages together.
+* `config:recommended`
+  * 👀== Renovate's default configuration 👀
+  * == example of a full config
 
 <!-- prettier-ignore -->
 !!! note
     The `:xyz` naming convention (with `:` prefix) is shorthand for the `default:` presets.
     For example: `:xyz` is the same as `default:xyz`.
 
-## How to Use Preset Configs
+## How to use Preset Configs?
 
-By default, Renovate App's onboarding PR suggests the `["config:recommended"]` preset.
-If you're self hosting, and want to use the `config:recommended` preset, then you must add `"onboardingConfig": { "extends": ["config:recommended"] }` to your bot's config.
+* `["config:recommended"]` preset
+  * == default Renovate App's onboarding PR
+  * if you're self hosting & want to use it -> add `"onboardingConfig": { "extends": ["config:recommended"] }` | your bot's config
+* see [Full Config Presets](/lib/config/presets/internal/config.md)
+* _Examples:_
+  * _Example1:_ onboarding `renovate.json`
 
-Read the [Full Config Presets](./presets-config.md) page to learn more about our `config:` presets.
+    ```json
+    {
+      "extends": ["config:recommended"]
+    }
+    ```
+  * _Example2:_ Renovate creates PRs / NOT | office
 
-A typical onboarding `renovate.json` looks like this:
-
-```json
-{
-  "extends": ["config:recommended"]
-}
-```
-
-Here's an example of using presets to change Renovate's behavior.
-You're happy with the `config:recommended` preset, but want Renovate to create PRs when you're not at the office.
-You look at our `schedule:` presets, and find the `schedule:nonOfficeHours` preset.
-You put `schedule:nonOfficeHours` in the `extends` array of your `renovate.json` file, like this:
-
-```json
-{
-  "extends": ["config:recommended", "schedule:nonOfficeHours"]
-}
-```
+    ```json
+    {
+      "extends": ["config:recommended", "schedule:nonOfficeHours"]
+    }
+    ```
 
 ## Preset Parameters
 
