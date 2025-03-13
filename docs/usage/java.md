@@ -5,26 +5,33 @@ description: Java versions support in Renovate
 
 # Java Dependency Updates
 
-Renovate can update Gradle and Maven dependencies.
-This includes libraries and plugins as well as the Gradle Wrapper.
+* Renovate -- can update --
+  * Gradle & Maven
+    * dependencies
+    * libraries
+    * plugins
+  * Gradle Wrapper
 
 ## LTS releases
 
-The `config:recommended` preset includes the `workarounds:javaLTSVersions` preset.
-The workaround limits Renovate to upgrade to LTS versions of the Java runtime only.
+* `config:recommended` preset
+  * -- includes the -- `workarounds:javaLTSVersions` preset
 
-If you want Renovate to offer all `major` Java updates then add `workarounds:javaLTSVersions` to the `ignorePreset` array:
+* `workarounds:javaLTSVersions` preset
+  * -> Java runtime -- is upgraded to -- LTS versions
+  * if you want Renovate offers ALL `major` Java updates -> add `"ignorePresets": ["workarounds:javaLTSVersions"]`
+    * _Example:_ 
 
-```json
-{
-  "extends": ["config:recommended"],
-  "ignorePresets": ["workarounds:javaLTSVersions"]
-}
-```
+    ```json
+    {
+      "extends": ["config:recommended"],
+      "ignorePresets": ["workarounds:javaLTSVersions"]
+    }
+    ```
 
 ## Gradle
 
-Renovate detects versions that are specified in a string `'group:artifact:version'` and those specified in a map `(group:groupName, name:ArtifactName, version:Version)`.
+* TODO: Renovate detects versions that are specified in a string `'group:artifact:version'` and those specified in a map `(group:groupName, name:ArtifactName, version:Version)`.
 
 ### Gradle File Support
 
