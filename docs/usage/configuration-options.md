@@ -690,10 +690,15 @@ When using with `npm`, we recommend you:
 
 ## customDatasources
 
-Use `customDatasources` to fetch releases from APIs or statically hosted sites and Renovate has no own datasource.
-These datasources can be referred by `customManagers` or can be used to overwrite default datasources.
+* allows
+  * fetching releases -- from --
+    * APIs / has NOT own datasource, OR
+    * statically hosted sites / has NOT own datasource,
+* uses
+  * -- being referred by -- `customManagers`
+  * overwrite default datasources
 
-For more details see the [`custom` datasource documentation](modules/datasource/custom/index.md).
+* see [`custom` datasource documentation](modules/datasource/custom/index.md)
 
 ## customManagers
 
@@ -2544,54 +2549,49 @@ Renovate only queries the OSV database for dependencies that use one of these da
 
 * `packageRules`
   * == collection of rules / 
-    * ALL are evaluated
+    * ALL are evaluated == ALL must match
     * order matters
       * Reason: 🧠if SEVERAL specify the SAME option -> later rules -- override -- earlier ones 🧠
     * 👀-- based on -- regex pattern matching 👀
-      * ==  >=1 `match...` matcher / EACH package rule 
+      * ==  >=1 `match...` matcher / EACH package rule
+        * types of matchers
+          * POSITIVE
+          * NEGATIVE
       * | 
         * individual packages or
         * groups of packages
       * if MULTIPLE rules match a dependency -> configurations from matching rules -- will be -- merged TOGETHER
+      * if it matches a negative pattern -> returns `false`
   * TODO:
 
-The matching process for a package rule:
-
-- If multiple matchers are included in one package rule, all of them must match.
-- Each matcher must contain at least one pattern. Some matchers allow both positive and negative patterns.
-- If a matcher includes any positive patterns, it must match at least one of them.
-- A matcher returns `false` if it matches _any_ negative pattern, even if a positive match also occurred.
-
 * see [Renovate's string pattern matching](./string-pattern-matching.md)
+* _Examples:_
+  * _Example1:_ group together ALL packages / start with `eslint` | 1! branch/PR -> use `matchPackageNames` / prefix pattern
 
-Here is an example if you want to group together all packages starting with `eslint` into a single branch/PR:
+      ```json
+      {
+        "packageRules": [
+          {
+            "matchPackageNames": ["eslint**"],
+            "groupName": "eslint packages"
+          }
+        ]
+      }
+      ```
 
-```json
-{
-  "packageRules": [
+  * _Example2:_ AWS SDK packages / weekly updates
+
+    ```json
     {
-      "matchPackageNames": ["eslint**"],
-      "groupName": "eslint packages"
+      "packageRules": [
+        {
+          "description": "Schedule AWS SDK updates on Sunday nights (9 PM - 12 AM)",
+          "matchPackageNames": ["@aws-sdk/*"],
+          "schedule": ["* 21-23 * * 0"]
+        }
+      ]
     }
-  ]
-}
-```
-
-Note how the above uses `matchPackageNames` with a prefix pattern.
-
-Here's an example config to limit the "noisy" AWS SDK packages to weekly updates:
-
-```json
-{
-  "packageRules": [
-    {
-      "description": "Schedule AWS SDK updates on Sunday nights (9 PM - 12 AM)",
-      "matchPackageNames": ["@aws-sdk/*"],
-      "schedule": ["* 21-23 * * 0"]
-    }
-  ]
-}
-```
+    ```
 
 For Maven dependencies, the package name is `<groupId:artefactId>`, e.g. `"matchPackageNames": ["com.thoughtworks.xstream:xstream"]`
 
@@ -2828,48 +2828,50 @@ Instead you should do `> 13 months`.
 
 ### matchCurrentValue
 
-This option is matched against the `currentValue` field of a dependency.
-
-`matchCurrentValue` supports Regular Expressions and glob patterns. For example, the following enforces that updates from `1.*` versions will be merged automatically:
-
-```json
-{
-  "packageRules": [
+* allows
+  * -- matching against the -- dependency's `currentValue` field 
+* supports
+  * Regular Expressions
+    * requirements
+      * begin & end with `/`
+    * `!/ /`
+      * negated regex syntax 
+  * glob patterns
+* _Examples:_
+  * _Example1:_ updates `1.*` versions -> merged AUTOMATICALLY
+      ```json
+      {
+        "packageRules": [
+          {
+            "matchPackageNames": ["io.github.resilience4j**"],
+            "matchCurrentValue": "1.*",
+            "automerge": true
+          }
+        ]
+      }
+      ```
+  * _Example2:_ use Regular Expressions
+    ```json
     {
-      "matchPackageNames": ["io.github.resilience4j**"],
-      "matchCurrentValue": "1.*",
-      "automerge": true
+      "packageRules": [
+        {
+          "matchPackageNames": ["io.github.resilience4j**"],
+          "matchCurrentValue": "/^1\\./"
+        }
+      ]
     }
-  ]
-}
-```
-
-Regular Expressions must begin and end with `/`.
-
-```json
-{
-  "packageRules": [
+    ```
+  * _Example3:_ negated regex syntax -- to ignore -- certain versions
+    ```json
     {
-      "matchPackageNames": ["io.github.resilience4j**"],
-      "matchCurrentValue": "/^1\\./"
+      "packageRules": [
+        {
+          "matchPackageNames": ["io.github.resilience4j**"],
+          "matchCurrentValue": "!/^0\\./"
+        }
+      ]
     }
-  ]
-}
-```
-
-This field also supports a special negated regex syntax to ignore certain versions.
-Use the syntax `!/ /` like this:
-
-```json
-{
-  "packageRules": [
-    {
-      "matchPackageNames": ["io.github.resilience4j**"],
-      "matchCurrentValue": "!/^0\\./"
-    }
-  ]
-}
-```
+    ```
 
 ### matchCurrentVersion
 
@@ -3082,52 +3084,55 @@ For more details on this syntax see Renovate's [string pattern matching document
 
 ### matchPackageNames
 
-Use this field to match against the `packageName` field.
-This matching can be an exact match, Glob match, or Regular Expression match.
-
-For more details on supported syntax see Renovate's [string pattern matching documentation](./string-pattern-matching.md).
-Note that Glob matching (including exact name matching) is case-insensitive.
-
-```json title="exact name match"
-{
-  "packageRules": [
+* allows
+  * -- matching against the -- `packageName` field
+* ALLOWED types of matching
+  * exact match, 
+    * case-insensitive
+  * Glob match,
+    * case-insensitive
+  * Regular Expression match
+* see Renovate's [string pattern matching documentation](./string-pattern-matching.md)
+* _Examples:_ ALL `match` matchers MUST be fulfilled / EACH package rule
+  * _Example1:_ npm + angular + pin
+    ```json title="exact name match"
     {
-      "matchDatasources": ["npm"],
-      "matchPackageNames": ["angular"],
-      "rangeStrategy": "pin"
+      "packageRules": [
+        {
+          "matchDatasources": ["npm"],
+          "matchPackageNames": ["angular"],
+          "rangeStrategy": "pin"
+        }
+      ]
     }
-  ]
-}
-```
+    ```
 
-The above will configure `rangeStrategy` to `pin` only for the npm package `angular`.
+  * _Example2:_ replaceStrategy | npm package / starts with `@angular/` EXCEPT `@angular/abc`
 
-```json title="prefix match using Glob"
-{
-  "packageRules": [
+      ```json title="prefix match using Glob"
+      {
+        "packageRules": [
+          {
+            "matchPackageNames": ["@angular/**", "!@angular/abc"],
+            "rangeStrategy": "replace"
+          }
+        ]
+      }
+      ```
+
+  * _Example3:_ group together ALL npm package / starts with the string `angular`
+
+    ```json title="pattern match using RegEx"
     {
-      "matchPackageNames": ["@angular/**", "!@angular/abc"],
-      "rangeStrategy": "replace"
+      "packageRules": [
+        {
+          "matchDatasources": ["npm"],
+          "matchPackageNames": ["/^angular/"],
+          "groupName": "Angular"
+        }
+      ]
     }
-  ]
-}
-```
-
-The above will set a replaceStrategy for any npm package which starts with `@angular/` except `@angular/abc`.
-
-```json title="pattern match using RegEx"
-{
-  "packageRules": [
-    {
-      "matchDatasources": ["npm"],
-      "matchPackageNames": ["/^angular/"],
-      "groupName": "Angular"
-    }
-  ]
-}
-```
-
-The above will group together any npm package which starts with the string `angular`.
+    ```
 
 ### matchRepositories
 
@@ -3845,21 +3850,23 @@ Only change this setting if you really need to.
 
 ## registryUrls
 
-Usually Renovate is able to either (a) use the default registries for a datasource, or (b) automatically detect during the manager extract phase which custom registries are in use.
-In case there is a need to configure them manually, it can be done using this `registryUrls` field, typically using `packageRules` like so:
-
-```json
-{
-  "packageRules": [
+* Renovate, by default, use
+  * datasource's default registries, OR
+  * AUTOMATICALLY detected | manager extract phase
+* -- depends on -- datasource
+* allows
+  * configuring them manually
+* _Example:_
+    ```json
     {
-      "matchDatasources": ["docker"],
-      "registryUrls": ["https://docker.mycompany.domain"]
+      "packageRules": [
+        {
+          "matchDatasources": ["docker"],
+          "registryUrls": ["https://docker.mycompany.domain"]
+        }
+      ]
     }
-  ]
-}
-```
-
-The field supports multiple URLs but it is datasource-dependent on whether only the first is used or multiple.
+    ```
 
 ## replacement
 
