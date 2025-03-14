@@ -1726,71 +1726,56 @@ Example: If you have set `branchPrefix: "deps-"` and `hashedBranchLength: 12` it
 
 ## hostRules
 
-The primary purpose of `hostRules` is to configure credentials for host authentication.
-You tell Renovate how to match against the host you need authenticated, and then you also tell it which credentials to use.
-
-The lookup keys for `hostRules` are: `hostType` and `matchHost`, both of which are optional.
-
-Supported credential fields are `token`, `username`, `password`, `timeout`, `enabled` and `insecureRegistry`.
-
-Example for configuring `docker` auth:
-
-```json
-{
-  "hostRules": [
+* allows
+  * configuring credentials | host authentication
+* keys / lookup for
+  * `hostType`
+  * `matchHost`
+* SUPPORTED credential fields
+  * `token`,
+  * `username`,
+  * `password`,
+  * `timeout`,
+  * `enabled`
+  * `insecureRegistry`
+* _Example:_ configure `docker` auth
+    ```json
     {
-      "matchHost": "docker.io",
-      "username": "<some-username>",
-      "password": "<some-password>"
+      "hostRules": [
+        {
+          "matchHost": "docker.io",
+          "username": "<some-username>",
+          "password": "<some-password>"
+        }
+      ]
     }
-  ]
-}
-```
-
-If multiple `hostRules` match a request, then they will be applied in the following order/priority:
-
-1. rules with only `hostType` specified
-1. rules with only `matchHost` specified (sorted by `matchHost` length if multiple match)
-1. rules with both `matchHost` and `hostType` specified (sorted by `matchHost` length if multiple match)
-
-To disable requests to a particular host, you can configure a rule like:
-
-```json
-{
-  "hostRules": [
+    ```
+* 👀if MULTIPLE `hostRules` -- match a -- request -> order/priority is applied 👀
+  * rules / ONLY `hostType` specified
+  * rules / ONLY `matchHost` specified
+    * if there are MULTIPLE rules -> sorted by `matchHost` length
+  * rules / `matchHost` & `hostType` specified
+    * if there are MULTIPLE rules -> sorted by `matchHost` length
+* if you want to disable requests | particular host -> 
+  * add `"enabled": false`
+        ```json
+        {
+          "hostRules": [
+            {
+              "matchHost": "registry.npmjs.org",
+              "enabled": false
+            }
+          ]
+        }
+        ```
+  * | preset, `disable...`
+    ```json
     {
-      "matchHost": "registry.npmjs.org",
-      "enabled": false
+      "extends": [":disableHost(registry.npmjs.org)"]
     }
-  ]
-}
-```
+    ```
 
-A preset alternative to the above is:
-
-```json
-{
-  "extends": [":disableHost(registry.npmjs.org)"]
-}
-```
-
-To match specific ports you have to add a protocol to `matchHost`:
-
-```json
-{
-  "hostRules": [
-    {
-      "matchHost": "https://domain.com:9118",
-      "enabled": false
-    }
-  ]
-}
-```
-
-<!-- prettier-ignore -->
-!!! warning
-    Using `matchHost` without a protocol behaves the same as if you had set no `matchHost` configuration.
-
+* TODO:
 <!-- prettier-ignore -->
 !!! note
     Disabling a host is only 100% effective if added to self-hosted config.
