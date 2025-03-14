@@ -349,22 +349,23 @@ Configuring this to `true` means that Renovate will detect and apply the default
 
 ## branchConcurrentLimit
 
-By default, Renovate won't enforce any concurrent branch limits.
-The `config:recommended` preset that many extend from limits the number of concurrent branches to 10, but in many cases a limit as low as 3 or 5 can be most efficient for a repository.
+* == branch concurrent MAXIMUM number 👀/ repo 👀
+* OPTIONAL
+* if you use `config:recommended` preset -> < 10
+  * recommendations
+    * 3 or 5
+* _Example:_ 
+    ```json
+    {
+      "branchConcurrentLimit": 3
+    }
+    ```
 
-If you want the same limit for both concurrent branches and concurrent PRs, then set a value for `prConcurrentLimit` and it will be re-used for branch calculations too.
-But if you want to allow more concurrent branches than concurrent PRs, you can configure both values (e.g. `branchConcurrentLimit=5` and `prConcurrentLimit=3`).
+* 👀if you want NUMBER of branch concurrent = NUMBER of  concurrent PRs -> use `prConcurrentLimit` 👀
+* 👀if you want to allow NUMBER of branch concurrent > NUMBER of concurrent PRs -> set `branchConcurrentLimit` & `prConcurrentLimit` 👀
+  * _Example:_ `branchConcurrentLimit=5` & `prConcurrentLimit=3`
 
-This limit is enforced on a per-repository basis.
-
-Example config:
-
-```json
-{
-  "branchConcurrentLimit": 3
-}
-```
-
+* TODO:
 <!-- prettier-ignore -->
 !!! warning
     Leaving PRs/branches as unlimited or as a high number increases the time it takes for Renovate to process a repository.
@@ -2542,25 +2543,26 @@ Renovate only queries the OSV database for dependencies that use one of these da
 ## packageRules
 
 * `packageRules`
-  * 👀lets you apply rules -- via -- regex pattern matching,👀 | 
-    * individual packages or
-    * groups of packages
   * == collection of rules / 
     * ALL are evaluated
     * order matters
-      * Reason: 🧠if SEVERAL specify the SAME option -> later rules -- override -- earlier ones 🧠  
-  * if MULTIPLE rules match a dependency -> configurations from matching rules -- will be -- merged TOGETHER
+      * Reason: 🧠if SEVERAL specify the SAME option -> later rules -- override -- earlier ones 🧠
+    * 👀-- based on -- regex pattern matching 👀
+      * ==  >=1 `match...` matcher / EACH package rule 
+      * | 
+        * individual packages or
+        * groups of packages
+      * if MULTIPLE rules match a dependency -> configurations from matching rules -- will be -- merged TOGETHER
   * TODO:
 
 The matching process for a package rule:
 
-- Each package rule must include at least one `match...` matcher.
 - If multiple matchers are included in one package rule, all of them must match.
 - Each matcher must contain at least one pattern. Some matchers allow both positive and negative patterns.
 - If a matcher includes any positive patterns, it must match at least one of them.
 - A matcher returns `false` if it matches _any_ negative pattern, even if a positive match also occurred.
 
-For more details on positive and negative pattern syntax see Renovate's [string pattern matching documentation](./string-pattern-matching.md).
+* see [Renovate's string pattern matching](./string-pattern-matching.md)
 
 Here is an example if you want to group together all packages starting with `eslint` into a single branch/PR:
 
@@ -3603,14 +3605,9 @@ The available sections are:
 
 ## prConcurrentLimit
 
-This setting - if enabled - limits Renovate to a maximum of `x` concurrent PRs open at any time.
-
-This limit is enforced on a per-repository basis.
-
-<!-- prettier-ignore -->
-!!! note
-    Renovate always creates security PRs, even if the concurrent PR limit is already reached.
-    Security PRs have `[SECURITY]` in their PR title.
+* == MAXIMUM number of `x` concurrent opened PRs / repo | ANY time
+* ALTHOUGH concurrent PR limit is reached -> Renovate create security PRs
+  * security PRs' title -- have -- `[SECURITY]`
 
 ## prCreation
 
