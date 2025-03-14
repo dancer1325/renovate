@@ -4,23 +4,25 @@ title: Datasources
 
 # Datasources
 
-After Renovate's manager scanned the files and extracted the dependencies, it assigns a `datasource` to each extracted package file or dependency.
-The `datasource` tells Renovate how to search for new versions.
-
-You don't need to configure or override datasources.
-But you may use datasources in a `packageRules` array to configure Renovate's behavior, for example:
-
-```json
-{
-  "packageRules": [
-    {
-      "matchDatasources": ["npm"],
-      "matchPackageNames": ["lodash"],
-      "automerge": true
-    }
-  ]
-}
-```
+* how does it work?
+  * Renovate's manager 
+    * -- scan the -- files
+    * -- extracted the -- dependencies
+    * 👀-- assigns a -- `datasource` / EACH extracted package file or dependency 👀
+* uses
+  * 💡tells Renovate -- how to search for -- NEW versions 💡
+    * _Example:_ | `packageRules` array, to configure Renovate's behavior
+        ```json
+        {
+          "packageRules": [
+            {
+              "matchDatasources": ["npm"],
+              "matchPackageNames": ["lodash"],
+              "automerge": true
+            }
+          ]
+        }
+        ```
 
 ## Supported Datasources
 
