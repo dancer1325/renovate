@@ -1,22 +1,8 @@
 # About us
 
-Renovate was created by [Mend](https://www.mend.io/) staff and they continue to work on Renovate.
-
-More than 1000 outside contributors helped improve Renovate.
+* [Mend](https://www.mend.io/) staff + 1000 outside contributors
 
 ## Special thanks
-
-We want to highlight the work of these awesome people.
-Thank you for your time and effort!
-
-### Maintainers
-
-Renovate is maintained by:
-
-- [@rarkins](https://github.com/rarkins)
-- [@viceice](https://github.com/viceice)
-- [@JamieMagee](https://github.com/JamieMagee)
-- [@secustor](https://github.com/secustor)
 
 ### Maintainers for features
 
@@ -57,10 +43,3 @@ If you need more assistance than what this project offers, you have two options:
 
 1. Become a Mend.io customer, such as by buying Renovate Enterprise, or
 1. Hire an experienced Renovate contributor privately for consulting. Mend.io staff do _not_ offer this service, but one of our volunteer maintainers, [`@secustor`](https://github.com/secustor), does
-
-## About these docs
-
-The Renovate docs are built from Markdown files in our [`renovatebot/renovate` repository](https://github.com/renovatebot/renovate).
-Most of the source files can be found in the [`docs/usage/` directory](https://github.com/renovatebot/renovate/tree/main/docs/usage).
-
-We use [MkDocs](https://www.mkdocs.org/) and [Material for MkDocs](https://squidfunk.github.io/mkdocs-material/) to build our docs.
